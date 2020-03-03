@@ -9,21 +9,22 @@ public class GaussSeidel extends Base {
 
     @Override
     public void solve(FileWriter fw) {
+        fCPrint("\nGauss-Seidel_method\n",fw);
         super.solve(fw);
         float tmp;
         //if (hasNumberOfIterations){
-            for(int k=0;k<=numberOfIterations;k++){
-                fCPrint(k+" ",fw);
-                for (int i = 0; i < numberOfVariables; ++i){
+        for(int k=0;k<=numberOfIterations;k++){
+            StringBuilder s= new StringBuilder();
+            for (int i = 0; i < numberOfVariables; ++i){
                     tmp=0;
                     for(int j=0;j<numberOfVariables;j++){
                         if(i!=j)tmp-=holder[j]*coefficients[i][j];
                     }
                     tmp+=coefficients[i][numberOfVariables];
                     holder[i]=tmp/coefficients[i][i];
-                    fCPrint(holder[i]+" ",fw);
+                    s.append(holder[i]).append(" ");
                 }
-                fCPrint("\n",fw);
+                fCPrint(k+" "+s+"\n",fw);
             }
         /*}else{
 

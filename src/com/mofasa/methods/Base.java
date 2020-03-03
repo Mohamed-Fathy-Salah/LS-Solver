@@ -23,7 +23,6 @@ abstract public class Base {
     }
     protected void fCPrint(String s,FileWriter fw){
         System.out.print(s);
-        //TODO: write in file
         try {
             fw.append(s);
             fw.flush();

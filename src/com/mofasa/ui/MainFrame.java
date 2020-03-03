@@ -28,7 +28,7 @@ public class MainFrame extends JFrame {
         main.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         main.setLayout(new BoxLayout(main, BoxLayout.X_AXIS));
 
-        //TODO: use JTable instead
+
         grid = new JPanel();
         grid.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         control = new JPanel();
@@ -77,17 +77,7 @@ public class MainFrame extends JFrame {
         if (gauss.isSelected()) new GaussSeidel(n, arr).solve(fw);
         if (sor.isSelected()) new SOR(n, arr).solve(fw);
 
-        File file = new File(Main.FILE_NAME);
-        if (!Desktop.isDesktopSupported()) {
-            System.out.println("not supported to open files");
-            return;
-        }
-        Desktop desktop = Desktop.getDesktop();
-        try {
-            desktop.open(file);
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        openExcel();
     }
 
     private void change(int value) {
@@ -105,6 +95,19 @@ public class MainFrame extends JFrame {
             for (int j = 0; j <= n; j++) {
                 grid.add(new JTextField(5));
             }
+        }
+    }
+    private void openExcel(){
+        File file = new File(Main.FILE_NAME);
+        if (!Desktop.isDesktopSupported()) {
+            System.out.println("not supported to open files");
+            return;
+        }
+        Desktop desktop = Desktop.getDesktop();
+        try {
+            desktop.open(file);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
         }
     }
 }
