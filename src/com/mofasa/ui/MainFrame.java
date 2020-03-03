@@ -1,47 +1,52 @@
 package com.mofasa.ui;
 
+import com.mofasa.Main;
 import com.mofasa.methods.GaussSeidel;
 import com.mofasa.methods.Jacobi;
 import com.mofasa.methods.SOR;
 
 import javax.swing.*;
 import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 
 public class MainFrame extends JFrame {
-    JPanel grid,control;
+    JPanel grid, control;
     JLabel number;
     JSlider numberSelector;
-    JCheckBox jacobi,gauss,sor;
+    JCheckBox jacobi, gauss, sor;
     JButton solve;
-    public MainFrame(){
+
+    public MainFrame(FileWriter fw) {
         super("LS solver");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
         setLocationRelativeTo(null);//center the frame
 
         JPanel main = new JPanel();
-        main.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
-        main.setLayout(new BoxLayout(main,BoxLayout.X_AXIS));
+        main.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        main.setLayout(new BoxLayout(main, BoxLayout.X_AXIS));
 
         //TODO: use JTable instead
         grid = new JPanel();
-        grid.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
+        grid.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         control = new JPanel();
-        control.setLayout(new BoxLayout(control,BoxLayout.Y_AXIS));
+        control.setLayout(new BoxLayout(control, BoxLayout.Y_AXIS));
 
         number = new JLabel();
 
         change(2);
 
-        numberSelector=new JSlider(2,20,2);
+        numberSelector = new JSlider(2, 10, 2);
         numberSelector.addChangeListener(changeEvent -> change(numberSelector.getValue()));
 
         jacobi = new JCheckBox("Jacobi");
-        gauss =new JCheckBox("Gauss-Seidel");
+        gauss = new JCheckBox("Gauss-Seidel");
         sor = new JCheckBox("SOR");
 
         solve = new JButton("solve");
-        solve.addActionListener(actionEvent -> solveIt());
+        solve.addActionListener(actionEvent -> solveIt(fw));
 
         control.add(Box.createVerticalGlue());
         control.add(number);
@@ -60,17 +65,29 @@ public class MainFrame extends JFrame {
         pack();
     }
 
-    private void solveIt() {
+    private void solveIt(FileWriter fw) {
         int n = Integer.parseInt(number.getText());
-        int[][] arr= new int[n][n+1];
-        for (int i=1;i<=n;i++){
-            for (int j=0;j<=n;j++){
-                arr[i-1][j]=Integer.parseInt(((JTextField)grid.getComponentAt(i,j)).getText());
+        int[][] arr = new int[n][n + 1];
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j <= n; j++) {
+                arr[i - 1][j] = Integer.parseInt(((JTextField) grid.getComponent(i * (n + 1) + j)).getText());
             }
         }
-        if(jacobi.isSelected())new Jacobi(n,arr).solve();
-        if(gauss.isSelected())new GaussSeidel(n,arr).solve();
-        if(sor.isSelected())new SOR(n,arr).solve();
+        if (jacobi.isSelected()) new Jacobi(n, arr).solve(fw);
+        if (gauss.isSelected()) new GaussSeidel(n, arr).solve(fw);
+        if (sor.isSelected()) new SOR(n, arr).solve(fw);
+
+        File file = new File(Main.FILE_NAME);
+        if (!Desktop.isDesktopSupported()) {
+            System.out.println("not supported to open files");
+            return;
+        }
+        Desktop desktop = Desktop.getDesktop();
+        try {
+            desktop.open(file);
+        } catch (IOException e) {
+            System.out.println(e.getMessage());
+        }
     }
 
     private void change(int value) {
@@ -80,12 +97,12 @@ public class MainFrame extends JFrame {
     }
 
     private void fillGrid(int n) {
-        grid.setLayout(new GridLayout(n+1,n+1,10,10));
+        grid.setLayout(new GridLayout(n + 1, n + 1, 10, 10));
         grid.removeAll();
-        for (int i=1;i<=n;i++)grid.add(new JLabel("x"+ i,SwingConstants.CENTER));
-        grid.add(new JLabel("= C",SwingConstants.CENTER));
-        for (int i=1;i<=n;i++){
-            for (int j=0;j<=n;j++){
+        for (int i = 1; i <= n; i++) grid.add(new JLabel("x" + i, SwingConstants.CENTER));
+        grid.add(new JLabel("= C", SwingConstants.CENTER));
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j <= n; j++) {
                 grid.add(new JTextField(5));
             }
         }

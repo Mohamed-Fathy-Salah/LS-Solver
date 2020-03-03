@@ -2,8 +2,20 @@ package com.mofasa;
 
 import com.mofasa.ui.MainFrame;
 
+import java.awt.*;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+
 public class Main {
+    public static final String FILE_NAME = "output.xlsx";
     public static void main(String[] args) {
-        new MainFrame();
+        FileWriter fw = null;
+        try {
+            fw=new FileWriter(FILE_NAME);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        new MainFrame(fw);
     }
 }
