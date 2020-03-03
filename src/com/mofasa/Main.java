@@ -2,8 +2,6 @@ package com.mofasa;
 
 import com.mofasa.ui.MainFrame;
 
-import java.awt.*;
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
