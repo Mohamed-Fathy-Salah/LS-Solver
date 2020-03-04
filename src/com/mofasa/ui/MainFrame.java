@@ -4,7 +4,6 @@ import com.mofasa.Main;
 import com.mofasa.methods.GaussSeidel;
 import com.mofasa.methods.Jacobi;
 import com.mofasa.methods.SOR;
-
 import javax.swing.*;
 import java.awt.*;
 import java.io.File;
@@ -13,8 +12,7 @@ import java.io.IOException;
 
 public class MainFrame extends JFrame {
     JPanel grid, control;
-    JLabel number;
-    JSlider numberSelector;
+    Slider numberSelector,wSelector;
     JCheckBox jacobi, gauss, sor;
     JButton solve;
 
@@ -28,33 +26,39 @@ public class MainFrame extends JFrame {
         main.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         main.setLayout(new BoxLayout(main, BoxLayout.X_AXIS));
 
-
         grid = new JPanel();
         grid.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
         control = new JPanel();
         control.setLayout(new BoxLayout(control, BoxLayout.Y_AXIS));
 
-        number = new JLabel();
+        fillGrid(2);
 
-        change(2);
+        numberSelector = new Slider(2, 10, 2,changeEvent -> fillGrid(numberSelector.getValue()));
 
-        numberSelector = new JSlider(2, 10, 2);
-        numberSelector.addChangeListener(changeEvent -> change(numberSelector.getValue()));
+        wSelector = new Slider(0,200,1,null);
+        wSelector.setVisible(false);
 
         jacobi = new JCheckBox("Jacobi");
         gauss = new JCheckBox("Gauss-Seidel");
         sor = new JCheckBox("SOR");
+        sor.addItemListener(itemEvent -> {wSelector.setVisible(sor.isSelected());pack();});
+
+        JPanel tmp = new JPanel();
+        tmp.setLayout(new BoxLayout(tmp,BoxLayout.X_AXIS));
+
+        tmp.add(sor);
+        tmp.add(Box.createHorizontalGlue());
+        tmp.add(wSelector);
 
         solve = new JButton("solve");
         solve.addActionListener(actionEvent -> solveIt(fw));
 
         control.add(Box.createVerticalGlue());
-        control.add(number);
         control.add(numberSelector);
         control.add(Box.createVerticalGlue());
-        control.add(jacobi);
-        control.add(gauss);
-        control.add(sor);
+        control.add(leftJustify(jacobi));
+        control.add(leftJustify(gauss));
+        control.add(tmp);
         control.add(Box.createVerticalGlue());
         control.add(solve);
 
@@ -66,7 +70,7 @@ public class MainFrame extends JFrame {
     }
 
     private void solveIt(FileWriter fw) {
-        int n = Integer.parseInt(number.getText());
+        int n = numberSelector.getValue();
         int[][] arr = new int[n][n + 1];
         for (int i = 1; i <= n; i++) {
             for (int j = 0; j <= n; j++) {
@@ -75,15 +79,9 @@ public class MainFrame extends JFrame {
         }
         if (jacobi.isSelected()) new Jacobi(n, arr).solve(fw);
         if (gauss.isSelected()) new GaussSeidel(n, arr).solve(fw);
-        if (sor.isSelected()) new SOR(n, arr).solve(fw);
+        if (sor.isSelected()) new SOR(n, arr,wSelector.getValue()/100.0f).solve(fw);
 
         openExcel();
-    }
-
-    private void change(int value) {
-        number.setText(Integer.toString(value));
-        fillGrid(value);
-        pack();
     }
 
     private void fillGrid(int n) {
@@ -96,6 +94,7 @@ public class MainFrame extends JFrame {
                 grid.add(new JTextField(5));
             }
         }
+        pack();
     }
     private void openExcel(){
         File file = new File(Main.FILE_NAME);
@@ -109,5 +108,13 @@ public class MainFrame extends JFrame {
         } catch (IOException e) {
             System.out.println(e.getMessage());
         }
+    }
+    private Component leftJustify( Component component )  {
+        Box  b = Box.createHorizontalBox();
+        b.add( component );
+        b.add( Box.createHorizontalGlue() );
+        // (Note that you could throw a lot more components
+        // and struts and glue in here.)
+        return b;
     }
 }
