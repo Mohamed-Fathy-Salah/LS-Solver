@@ -70,6 +70,7 @@ public class MainFrame extends JFrame {
     }
 
     private void solveIt(FileWriter fw) {
+        //TODO: run it in background thread
         int n = numberSelector.getValue();
         int[][] arr = new int[n][n + 1];
         for (int i = 1; i <= n; i++) {

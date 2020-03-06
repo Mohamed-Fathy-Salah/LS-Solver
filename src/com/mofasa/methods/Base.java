@@ -6,17 +6,16 @@ import java.io.IOException;
 abstract public class Base {
     protected int numberOfVariables,numberOfIterations;
     protected int[][] coefficients;
-    protected double[] holder;
-    protected boolean[] done;
-    //protected boolean hasNumberOfIterations;
-    //TODO:set error
+    protected float[] holder;
+    //protected boolean[] done;
+    //protected int decimalError;
 
     public Base(int numberOfVariables, int[][] coefficients) {
         this.numberOfVariables = numberOfVariables;
         this.coefficients = coefficients;
         //TODO: get both from user
-        holder = new double[numberOfVariables];
-        numberOfIterations = 10;
+        holder = new float[numberOfVariables];
+        numberOfIterations = 14;
     }
     private void sort(){
         //TODO: make the coef array diagonally dominant
@@ -37,6 +36,9 @@ abstract public class Base {
         fCPrint("\n",fw);
     }
     public void solve(FileWriter fw){
+        fCPrint("\n"+this.getClass().getSimpleName()+"_method\n",fw);
         printTableHeaders(fw);
+        sort();
     };
+    protected boolean hasNumberOfIteration(){return numberOfIterations>0;}
 }
