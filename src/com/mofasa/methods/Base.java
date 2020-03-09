@@ -1,10 +1,9 @@
 package com.mofasa.methods;
 
-import java.io.FileWriter;
-import java.io.IOException;
+import com.mofasa.FileHandler;
 
 abstract public class Base {
-    protected int numberOfVariables,numberOfIterations;
+    protected int numberOfVariables;
     protected int[][] coefficients;
     protected float[] holder;
     //protected boolean[] done;
@@ -13,32 +12,27 @@ abstract public class Base {
     public Base(int numberOfVariables, int[][] coefficients) {
         this.numberOfVariables = numberOfVariables;
         this.coefficients = coefficients;
-        //TODO: get both from user
+        //TODO: get init from user
         holder = new float[numberOfVariables];
-        numberOfIterations = 14;
     }
     private void sort(){
         //TODO: make the coef array diagonally dominant
     }
-    protected void fCPrint(String s,FileWriter fw){
+    protected void fCPrint(String s){
         System.out.print(s);
-        try {
-            fw.append(s);
-            fw.flush();
-        } catch (IOException e) {
-            System.out.println(e.getMessage());
-        }
+        FileHandler.getInstance().write(s);
     }
-    private void printTableHeaders(FileWriter fw){
-        fCPrint("n ",fw);
+    private void printTableHeaders(){
+        fCPrint("n ");
         for (int i=1;i<=numberOfVariables;i++)
-            fCPrint("x"+i+" ",fw);
-        fCPrint("\n",fw);
+            fCPrint("x"+i+" ");
+        fCPrint("\n");
     }
-    public void solve(FileWriter fw){
-        fCPrint("\n"+this.getClass().getSimpleName()+"_method\n",fw);
-        printTableHeaders(fw);
+    protected boolean hasNumberOfIteration(int numberOfIterations){return numberOfIterations>0;}
+
+    public void solve(int numberOfIterations){
+        fCPrint("\n"+this.getClass().getSimpleName()+"_method\n");
+        printTableHeaders();
         sort();
-    };
-    protected boolean hasNumberOfIteration(){return numberOfIterations>0;}
+    }
 }
