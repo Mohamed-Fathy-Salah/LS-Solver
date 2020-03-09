@@ -1,17 +1,15 @@
 package com.mofasa.methods;
 
-import java.io.FileWriter;
-
 public class GaussSeidel extends Base {
     public GaussSeidel(int numberOfVariables, int[][] coefficients) {
         super(numberOfVariables, coefficients);
     }
 
     @Override
-    public void solve(FileWriter fw) {
-        super.solve(fw);
+    public void solve(int numberOfIterations) {
+        super.solve(numberOfIterations);
         double tmp;
-        if (hasNumberOfIteration()) {
+        if (hasNumberOfIteration(numberOfIterations)) {
             for (int k = 0; k <= numberOfIterations; k++) {
                 StringBuilder s = new StringBuilder();
                 for (int i = 0; i < numberOfVariables; ++i) {
@@ -23,7 +21,7 @@ public class GaussSeidel extends Base {
                     holder[i] = (float) (tmp / coefficients[i][i]);
                     s.append(holder[i]).append(" ");
                 }
-                fCPrint(k + " " + s + "\n", fw);
+                fCPrint(k + " " + s + "\n");
             }
         }
         /*else {
