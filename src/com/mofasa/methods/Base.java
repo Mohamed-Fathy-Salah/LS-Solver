@@ -5,15 +5,14 @@ import com.mofasa.FileHandler;
 abstract public class Base {
     protected int numberOfVariables;
     protected int[][] coefficients;
-    protected float[] holder;
+    protected float[] init;
     //protected boolean[] done;
     //protected int decimalError;
 
-    public Base(int numberOfVariables, int[][] coefficients) {
+    public Base(int numberOfVariables, int[][] coefficients,float[] init) {
         this.numberOfVariables = numberOfVariables;
         this.coefficients = coefficients;
-        //TODO: get init from user
-        holder = new float[numberOfVariables];
+        this.init = init;
     }
     private void sort(){
         //TODO: make the coef array diagonally dominant
