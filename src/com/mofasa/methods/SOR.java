@@ -3,8 +3,8 @@ package com.mofasa.methods;
 public class SOR extends Base {
     private float w;
 
-    public SOR(int numberOfVariables, int[][] coefficients, float w) {
-        super(numberOfVariables, coefficients);
+    public SOR(int numberOfVariables, int[][] coefficients,float[] init, float w) {
+        super(numberOfVariables, coefficients,init);
         this.w = w;
     }
     @Override
@@ -17,11 +17,11 @@ public class SOR extends Base {
                 for (int i = 0; i < numberOfVariables; ++i) {
                     tmp = 0;
                     for (int j = 0; j < numberOfVariables; j++) {
-                        if (i != j) tmp -= holder[j] * coefficients[i][j];
+                        if (i != j) tmp -= init[j] * coefficients[i][j];
                     }
                     tmp += coefficients[i][numberOfVariables];
-                    holder[i] = (float) (w * tmp / coefficients[i][i] + (1 - w) * holder[i]);
-                    s.append(holder[i]).append(" ");
+                    init[i] = (float) (w * tmp / coefficients[i][i] + (1 - w) * init[i]);
+                    s.append(init[i]).append(" ");
                 }
                 fCPrint(k + " " + s + "\n");
             }

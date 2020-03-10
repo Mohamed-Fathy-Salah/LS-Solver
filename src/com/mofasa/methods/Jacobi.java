@@ -1,8 +1,8 @@
 package com.mofasa.methods;
 
 public class Jacobi extends Base {
-    public Jacobi(int numberOfVariables, int[][] coefficients) {
-        super(numberOfVariables, coefficients);
+    public Jacobi(int numberOfVariables, int[][] coefficients,float[] init) {
+        super(numberOfVariables, coefficients,init);
     }
 
     private float[] old = new float[numberOfVariables];
@@ -20,11 +20,11 @@ public class Jacobi extends Base {
                         if (i != j) tmp -= old[j] * coefficients[i][j];
                     }
                     tmp += coefficients[i][numberOfVariables];
-                    holder[i] = (float) (tmp / coefficients[i][i]);
+                    init[i] = (float) (tmp / coefficients[i][i]);
                     s.append(old[i]).append(" ");
                 }
                 fCPrint(k + " " + s + "\n");
-                old = holder.clone();
+                old = init.clone();
             }
         }
         /*else{

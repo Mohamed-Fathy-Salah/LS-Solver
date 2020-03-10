@@ -16,7 +16,7 @@ public class MainFrame extends JFrame {
         super("LS solver");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setVisible(true);
-        setLocationRelativeTo(null);//center the frame
+        setResizable(false);
 
         JPanel main = new JPanel();
         main.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
@@ -56,26 +56,30 @@ public class MainFrame extends JFrame {
 
         control.add(Box.createVerticalGlue());
         control.add(numberSelector);
+        control.add(Box.createRigidArea(new Dimension(0,10)));
         control.add(Box.createVerticalGlue());
-        control.add(leftJustify(jacobi));
-        control.add(leftJustify(gauss));
+        control.add(justify(jacobi,false));
+        control.add(justify(gauss,false));
         control.add(tmp);
         control.add(Box.createVerticalGlue());
+        control.add(Box.createRigidArea(new Dimension(0,10)));
         control.add(iterationNumber);
+        control.add(Box.createRigidArea(new Dimension(0,10)));
         control.add(Box.createVerticalGlue());
-        control.add(solve);
+        control.add(justify(solve,true));
 
         main.add(grid);
+        main.add(Box.createRigidArea(new Dimension(5,0)));
+        main.add(new JSeparator(SwingConstants.VERTICAL));
+        main.add(Box.createRigidArea(new Dimension(10,0)));
         main.add(control);
 
         getContentPane().add(main);
-        setResizable(false);
         pack();
+        setLocationRelativeTo(null);
     }
 
     private void solveIt() {
-        int n = numberSelector.getValue();
-        int[][] arr = new int[n][n + 1];
         if (!(jacobi.isSelected() || gauss.isSelected() || sor.isSelected())) {
             JOptionPane.showMessageDialog(null, "choose a method to solve with");
             return;
@@ -83,17 +87,15 @@ public class MainFrame extends JFrame {
         try {
             new Thread(() -> {
                 try {
-                    for (int i = 1; i <= n; i++) {
-                        for (int j = 0; j <= n; j++) {
-                            arr[i - 1][j] = Integer.parseInt(((JTextField) grid.getComponent(i * (n + 1) + j)).getText());
-                        }
-                    }
+                    int n=numberSelector.getValue();
+                    int[][] coefficients = getCoefficients();
+                    float[] init=getInit();
                     if (jacobi.isSelected())
-                        MethodsFactory.solve(MethodsFactory.JACOBI, n, iterationNumber.getValue(), arr);
+                        MethodsFactory.solve(MethodsFactory.JACOBI, n, iterationNumber.getValue(), coefficients,init);
                     if (gauss.isSelected())
-                        MethodsFactory.solve(MethodsFactory.GAUSS_SEIDEL, n, iterationNumber.getValue(), arr);
+                        MethodsFactory.solve(MethodsFactory.GAUSS_SEIDEL, n, iterationNumber.getValue(), coefficients,init);
                     if (sor.isSelected())
-                        MethodsFactory.solve(MethodsFactory.SOR, n, iterationNumber.getValue(), arr, wSelector.getValue() / 100.0f);
+                        MethodsFactory.solve(MethodsFactory.SOR, n, iterationNumber.getValue(), coefficients, init,wSelector.getValue() / 100.0f);
 
                     FileHandler.getInstance().openExcell();
                 } catch (NumberFormatException ex) {
@@ -105,28 +107,59 @@ public class MainFrame extends JFrame {
         }
     }
 
+    private int[][] getCoefficients()throws NumberFormatException{
+        int n =numberSelector.getValue();
+        int[][] arr=new int[n][n+1];
+        for (int i = 1; i <= n; i++) {
+            for (int j = 0; j <= n; j++) {
+                arr[i - 1][j] = Integer.parseInt(((JTextField) grid.getComponent(i * (n + 1) + j)).getText());
+            }
+        }
+        return arr;
+    }
+
+    private float[] getInit()throws NumberFormatException{
+        int n=numberSelector.getValue();
+        int hold=(n+1)*(n+1);
+        float[] arr = new float[n];
+        String tmp;
+        for (int i=0;i<n;++i){
+            tmp =((JTextField)grid.getComponent(hold+i)).getText();
+            if (tmp.isEmpty())tmp="0";
+            arr[i]=Float.parseFloat(tmp);
+        }
+        return arr;
+    }
     private void fillGrid(int n) {
-        grid.setLayout(new GridLayout(n + 1, n + 1, 10, 10));
+        grid.setLayout(new GridLayout(n + 2, n + 1, 10, 10));
         grid.removeAll();
         for (int i = 1; i <= n; i++) grid.add(new JLabel("x" + i, SwingConstants.CENTER));
         grid.add(new JLabel("= C", SwingConstants.CENTER));
         for (int i = 1; i <= n; i++) {
             for (int j = 0; j <= n; j++) {
-                grid.add(getTField());
+                grid.add(getTField(false));
             }
         }
+        for (int i = 1; i <= n; i++) grid.add(getTField(true));
+        grid.add(new JLabel("<- init", SwingConstants.CENTER));
         pack();
+        setLocationRelativeTo(null);
     }
 
-    private JTextField getTField() {
+    private JTextField getTField(boolean init) {
         JTextField textField = new JTextField(5);
+        if (init){
+            textField.setBackground(Color.DARK_GRAY);
+            textField.setForeground(Color.WHITE);
+        }
         //TODO: append only numbers
 //        textField.getDocument().addDocumentListener();
         return textField;
     }
 
-    private Component leftJustify(Component component) {
+    private Component justify(Component component, boolean center) {
         Box b = Box.createHorizontalBox();
+        if (center)b.add(Box.createHorizontalGlue());
         b.add(component);
         b.add(Box.createHorizontalGlue());
         return b;

@@ -1,8 +1,8 @@
 package com.mofasa.methods;
 
 public class GaussSeidel extends Base {
-    public GaussSeidel(int numberOfVariables, int[][] coefficients) {
-        super(numberOfVariables, coefficients);
+    public GaussSeidel(int numberOfVariables, int[][] coefficients,float[] init) {
+        super(numberOfVariables, coefficients,init);
     }
 
     @Override
@@ -15,11 +15,11 @@ public class GaussSeidel extends Base {
                 for (int i = 0; i < numberOfVariables; ++i) {
                     tmp = 0;
                     for (int j = 0; j < numberOfVariables; j++) {
-                        if (i != j) tmp -= holder[j] * coefficients[i][j];
+                        if (i != j) tmp -= init[j] * coefficients[i][j];
                     }
                     tmp += coefficients[i][numberOfVariables];
-                    holder[i] = (float) (tmp / coefficients[i][i]);
-                    s.append(holder[i]).append(" ");
+                    init[i] = (float) (tmp / coefficients[i][i]);
+                    s.append(init[i]).append(" ");
                 }
                 fCPrint(k + " " + s + "\n");
             }

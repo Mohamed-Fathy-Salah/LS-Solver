@@ -4,6 +4,7 @@ import com.sun.istack.internal.Nullable;
 
 import javax.swing.*;
 import javax.swing.event.ChangeListener;
+import java.awt.*;
 
 public class Slider extends JPanel {
     private JSlider slider;
@@ -16,10 +17,17 @@ public class Slider extends JPanel {
         slider.setPaintTicks(true);
         slider.addChangeListener(changeEvent -> label.setText(tag + slider.getValue()));
         if(listener!=null)slider.addChangeListener(listener);
-        add(label);
+        add(centerJustify(label));
         add(slider);
     }
     public int getValue(){
         return slider.getValue();
+    }
+    private Component centerJustify(Component component) {
+        Box b = Box.createHorizontalBox();
+        b.add(Box.createHorizontalGlue());
+        b.add(component);
+        b.add(Box.createHorizontalGlue());
+        return b;
     }
 }
