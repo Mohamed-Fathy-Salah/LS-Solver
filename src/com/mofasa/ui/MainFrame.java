@@ -23,18 +23,19 @@ public class MainFrame extends JFrame {
         main.setLayout(new BoxLayout(main, BoxLayout.X_AXIS));
 
         grid = new JPanel();
-        grid.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+        grid.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 5));
         control = new JPanel();
+        control.setBorder(BorderFactory.createEmptyBorder(5,5,5,5));
         control.setLayout(new BoxLayout(control, BoxLayout.Y_AXIS));
 
         fillGrid(2);
 
         numberSelector = new Slider(2, 10, 2, changeEvent -> fillGrid(numberSelector.getValue()), "variables = ");
 
-        wSelector = new Slider(0, 200, 1, null, "w = 10^(-2) * ");
+        wSelector = new Slider(100, 200, 125, null, "w = 10^(-2) * ");
         wSelector.setVisible(false);
 
-        iterationNumber = new Slider(0, 40, 10, null, "iterations = ");
+        iterationNumber = new Slider(2, 40, 10, null, "iterations = ");
 
         jacobi = new JCheckBox("Jacobi");
         gauss = new JCheckBox("Gauss-Seidel");
@@ -68,11 +69,9 @@ public class MainFrame extends JFrame {
         control.add(Box.createVerticalGlue());
         control.add(justify(solve,true));
 
-        main.add(grid);
-        main.add(Box.createRigidArea(new Dimension(5,0)));
-        main.add(new JSeparator(SwingConstants.VERTICAL));
-        main.add(Box.createRigidArea(new Dimension(10,0)));
         main.add(control);
+        main.add(new JSeparator(SwingConstants.VERTICAL));
+        main.add(grid);
 
         getContentPane().add(main);
         pack();
@@ -91,11 +90,11 @@ public class MainFrame extends JFrame {
                     int[][] coefficients = getCoefficients();
                     float[] init=getInit();
                     if (jacobi.isSelected())
-                        MethodsFactory.solve(MethodsFactory.JACOBI, n, iterationNumber.getValue(), coefficients,init);
+                        MethodsFactory.solve(MethodsFactory.JACOBI, n, iterationNumber.getValue(), coefficients,init.clone());
                     if (gauss.isSelected())
-                        MethodsFactory.solve(MethodsFactory.GAUSS_SEIDEL, n, iterationNumber.getValue(), coefficients,init);
+                        MethodsFactory.solve(MethodsFactory.GAUSS_SEIDEL, n, iterationNumber.getValue(), coefficients,init.clone());
                     if (sor.isSelected())
-                        MethodsFactory.solve(MethodsFactory.SOR, n, iterationNumber.getValue(), coefficients, init,wSelector.getValue() / 100.0f);
+                        MethodsFactory.solve(MethodsFactory.SOR, n, iterationNumber.getValue(), coefficients, init.clone(),wSelector.getValue() / 100.0f);
 
                     FileHandler.getInstance().openExcell();
                 } catch (NumberFormatException ex) {
@@ -127,6 +126,7 @@ public class MainFrame extends JFrame {
             tmp =((JTextField)grid.getComponent(hold+i)).getText();
             if (tmp.isEmpty())tmp="0";
             arr[i]=Float.parseFloat(tmp);
+            System.out.print(arr[i]+" ");
         }
         return arr;
     }
