@@ -5,6 +5,8 @@ import com.mofasa.methods.MethodsFactory;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class MainFrame extends JFrame {
     JPanel grid, control;
@@ -152,8 +154,18 @@ public class MainFrame extends JFrame {
             textField.setBackground(Color.DARK_GRAY);
             textField.setForeground(Color.WHITE);
         }
-        //TODO: append only numbers
-//        textField.getDocument().addDocumentListener();
+        textField.addKeyListener(new KeyAdapter() {
+            @Override
+            public void keyTyped(KeyEvent e) {
+                char c = e.getKeyChar();
+                if( ! (Character.isDigit(c) || c == KeyEvent.VK_BACK_SPACE || c==KeyEvent.VK_DELETE)) {
+                    // if not a back_space button or del button or not a digit -> not typing and make a warn sound
+                    e.consume();
+                    // Addition -->  make beep (warn) sound :)
+                    getToolkit().beep();
+                }
+            }
+        });
         return textField;
     }
 
