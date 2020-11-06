@@ -4,9 +4,7 @@
 ![alt pic2](https://raw.githubusercontent.com/Mohamed-Fathy-Salah/LS-Solver/master/picshots/example2.png)
 ## Second - type in varibles coefficients .
 
-> 5 x<sub>1</sub> + x<sub>2</sub> = 6
-<br />
-> x<sub>1</sub> + 15 x<sub>2</sub> = 9
+> 5 x<sub>1</sub> + x<sub>2</sub> = 6 <br/> x<sub>1</sub> + 15 x<sub>2</sub> = 9
 
 
 ## Then selec the methods that you want to solve the system with .
